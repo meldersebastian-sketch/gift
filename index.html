@@ -1,76 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
   * { margin:0; padding:0; box-sizing:border-box; }
-  body {
-    background:#0d0d0d;
-    min-height:600px;
+  html, body {
+    width:100%; min-height:100vh;
     font-family:'Press Start 2P',monospace;
-    overflow:hidden;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    overflow-x:hidden;
+    background:#000;
+    display:flex; align-items:center; justify-content:center;
   }
-
-  /* EPILEPTIC BG */
   .scene {
     position:relative;
-    width:100%;
-    min-height:600px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    overflow:hidden;
-    background:#000;
+    width:100%; min-height:100vh;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    overflow:hidden; background:#000;
+    padding: 60px 12px 80px;
   }
-
   .bg-layer {
     position:absolute;inset:0;
     animation:bgFlash 0.18s step-end infinite;
-    z-index:0;
-    opacity:0.18;
+    z-index:0; opacity:0.18;
   }
   @keyframes bgFlash {
-    0%  { background: #ff0000; }
-    10% { background: #ff8800; }
-    20% { background: #ffff00; }
-    30% { background: #00ff00; }
-    40% { background: #00ffff; }
-    50% { background: #0088ff; }
-    60% { background: #8800ff; }
-    70% { background: #ff00ff; }
-    80% { background: #ff0088; }
-    90% { background: #ffffff; }
-    100%{ background: #ff0000; }
+    0%{background:#ff0000;}10%{background:#ff8800;}20%{background:#ffff00;}
+    30%{background:#00ff00;}40%{background:#00ffff;}50%{background:#0088ff;}
+    60%{background:#8800ff;}70%{background:#ff00ff;}80%{background:#ff0088;}
+    90%{background:#ffffff;}100%{background:#ff0000;}
   }
-
   .bg-strobe {
     position:absolute;inset:0;
-    background:repeating-linear-gradient(
-      45deg,
-      rgba(255,0,0,0.07) 0px, rgba(255,0,0,0.07) 20px,
-      rgba(0,255,0,0.07) 20px, rgba(0,255,0,0.07) 40px,
-      rgba(0,0,255,0.07) 40px, rgba(0,0,255,0.07) 60px
-    );
-    animation:strobeBg 0.4s linear infinite;
-    z-index:0;
+    background:repeating-linear-gradient(45deg,rgba(255,0,0,0.07) 0px,rgba(255,0,0,0.07) 20px,rgba(0,255,0,0.07) 20px,rgba(0,255,0,0.07) 40px,rgba(0,0,255,0.07) 40px,rgba(0,0,255,0.07) 60px);
+    animation:strobeBg 0.4s linear infinite; z-index:0;
   }
-  @keyframes strobeBg {
-    0%{background-position:0 0;}
-    100%{background-position:80px 80px;}
-  }
-
+  @keyframes strobeBg{0%{background-position:0 0;}100%{background-position:80px 80px;}}
   .scanlines {
     position:absolute;inset:0;
     background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.15) 3px,rgba(0,0,0,0.15) 4px);
     pointer-events:none;z-index:51;
   }
-
   .hud-corner {
-    position:absolute;width:40px;height:40px;
+    position:absolute;width:28px;height:28px;
     border-style:solid;opacity:0.9;z-index:20;
     animation:cornerRgb 0.5s step-end infinite;
   }
@@ -78,57 +51,55 @@
     0%{border-color:#ff0000;}25%{border-color:#ffff00;}
     50%{border-color:#00ff00;}75%{border-color:#00ffff;}100%{border-color:#ff00ff;}
   }
-  .hud-tl{top:10px;left:10px;border-width:3px 0 0 3px;}
-  .hud-tr{top:10px;right:10px;border-width:3px 3px 0 0;}
-  .hud-bl{bottom:10px;left:10px;border-width:0 0 3px 3px;}
-  .hud-br{bottom:10px;right:10px;border-width:0 3px 3px 0;}
+  .hud-tl{top:8px;left:8px;border-width:3px 0 0 3px;}
+  .hud-tr{top:8px;right:8px;border-width:3px 3px 0 0;}
+  .hud-bl{bottom:8px;left:8px;border-width:0 0 3px 3px;}
+  .hud-br{bottom:8px;right:8px;border-width:0 3px 3px 0;}
 
-  /* Kill feed */
   .killfeed {
-    position:absolute;top:14px;right:50px;
-    font-size:7px;color:#c8c8c8;
-    text-align:right;z-index:20;
-    text-shadow:1px 1px 0 #000;width:220px;
+    position:absolute; top:10px; right:38px;
+    font-size:6px; color:#c8c8c8;
+    text-align:right; z-index:20;
+    text-shadow:1px 1px 0 #000;
+    width: min(200px, 55vw);
   }
   .kf-entry {
-    line-height:18px;opacity:0;
+    line-height:16px; opacity:0;
     transform:translateX(20px);
     transition:opacity 0.25s ease,transform 0.25s ease;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
   .kf-entry.show{opacity:1;transform:translateX(0);}
   .kf-entry.fade{opacity:0;transition:opacity 0.5s ease;}
   .red{color:#ff4444;}.green{color:#88ff44;}.yellow{color:#ffcc00;}
 
-  /* Radar */
-  .radar{position:absolute;bottom:14px;left:14px;width:80px;height:80px;border-radius:50%;border:2px solid #4a7c20;background:rgba(0,20,0,0.7);overflow:hidden;z-index:20;}
+  .radar{position:absolute;bottom:10px;left:10px;width:60px;height:60px;border-radius:50%;border:2px solid #4a7c20;background:rgba(0,20,0,0.7);overflow:hidden;z-index:20;}
   .radar-sweep{position:absolute;inset:0;background:conic-gradient(rgba(0,255,0,0.4) 0deg,transparent 60deg,transparent 360deg);animation:sweep 2s linear infinite;transform-origin:center;}
   @keyframes sweep{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
   .radar-blip{position:absolute;width:4px;height:4px;background:#ff4444;border-radius:50%;box-shadow:0 0 4px #ff4444;}
-  .ammo{position:absolute;bottom:18px;right:55px;font-size:9px;color:#c8c8c8;text-shadow:1px 1px 0 #000;z-index:20;}
+  .ammo{position:absolute;bottom:14px;right:38px;font-size:7px;color:#c8c8c8;text-shadow:1px 1px 0 #000;z-index:20;}
 
-  /* Intro */
-  #intro{display:flex;flex-direction:column;align-items:center;gap:20px;z-index:30;position:relative;}
+  /* INTRO */
+  #intro{display:flex;flex-direction:column;align-items:center;gap:16px;z-index:30;position:relative;width:100%;}
   .title-text{
-    font-size:clamp(10px,2.5vw,18px);
+    font-size:clamp(12px,4vw,22px);
     animation:rgbText 0.3s step-end infinite;
-    text-align:center;letter-spacing:2px;line-height:1.8;
+    text-align:center;letter-spacing:2px;line-height:2;
     text-shadow:2px 2px 0 #000;
   }
   @keyframes rgbText{
     0%{color:#ff4444;}15%{color:#ff8800;}30%{color:#ffff00;}
     45%{color:#44ff44;}60%{color:#44ffff;}75%{color:#4488ff;}90%{color:#ff44ff;}
   }
-  .from-text{font-size:8px;color:#aaa;text-shadow:1px 1px 0 #000;text-align:center;line-height:2;}
+  .from-text{font-size:clamp(6px,2vw,9px);color:#aaa;text-shadow:1px 1px 0 #000;text-align:center;line-height:2.2;}
   .from-text span{color:#ff9944;}
   .reveal-btn{
     font-family:'Press Start 2P',monospace;
-    font-size:clamp(9px,2vw,14px);
-    padding:14px 28px;
-    background:#000;
-    border:3px solid #fff;
-    cursor:pointer;
+    font-size:clamp(10px,3vw,15px);
+    padding:clamp(10px,3vw,16px) clamp(16px,5vw,32px);
+    background:#000; border:3px solid #fff; cursor:pointer;
     animation:btnRgb 0.25s step-end infinite;
+    width:min(280px, 90vw); text-align:center;
   }
   @keyframes btnRgb{
     0%{color:#ff4444;border-color:#ff4444;box-shadow:0 0 20px #ff4444;}
@@ -139,64 +110,73 @@
   .reveal-btn::before{content:'▶ ';animation:arrowBlink 0.8s step-end infinite;}
   @keyframes arrowBlink{0%,100%{opacity:1}50%{opacity:0}}
 
-  /* Key box */
-  #keyBox{display:none;flex-direction:column;align-items:center;gap:14px;z-index:30;position:relative;}
+  /* KEY BOX */
+  #keyBox{display:none;flex-direction:column;align-items:center;gap:12px;z-index:30;position:relative;width:100%;max-width:480px;}
   #keyBox.show{display:flex;animation:zoomIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);}
   @keyframes zoomIn{0%{transform:scale(0) rotate(-5deg);opacity:0;}100%{transform:scale(1) rotate(0);opacity:1;}}
 
   .player-banner{
-    display:flex;align-items:center;gap:16px;
+    display:flex;align-items:center;gap:12px;
     background:rgba(0,0,0,0.85);
-    border:2px solid #fff;padding:10px 20px;
+    border:2px solid #fff;padding:10px 16px;
     animation:borderRgb 0.3s step-end infinite;
+    width:100%;justify-content:center;
   }
   @keyframes borderRgb{
     0%{border-color:#ff4444;box-shadow:0 0 15px #ff4444;}
     33%{border-color:#44ff44;box-shadow:0 0 15px #44ff44;}
     66%{border-color:#4488ff;box-shadow:0 0 15px #4488ff;}
   }
-  .gamertag{font-size:clamp(10px,2.5vw,16px);animation:rgbText 0.3s step-end infinite;text-shadow:2px 2px 0 #000;}
-  .prestige{font-size:8px;color:#ffcc00;text-shadow:0 0 6px #ffcc00;margin-top:4px;}
+  .gamertag{font-size:clamp(11px,3.5vw,18px);animation:rgbText 0.3s step-end infinite;text-shadow:2px 2px 0 #000;}
+  .prestige{font-size:clamp(6px,2vw,9px);color:#ffcc00;text-shadow:0 0 6px #ffcc00;margin-top:4px;}
 
   .unlocked-text{
-    font-size:clamp(7px,1.8vw,11px);
+    font-size:clamp(7px,2.2vw,12px);
     text-align:center;
     animation:rgbText 0.35s step-end infinite;
     text-shadow:2px 2px 0 #000;
-    line-height:1.8;
+    line-height:2;
+    padding:0 8px;
   }
 
   .key-panel{
     background:rgba(0,0,0,0.9);
     border:3px solid #88cc22;
-    padding:20px 30px;text-align:center;position:relative;
+    padding:16px clamp(12px,4vw,30px);
+    text-align:center;position:relative;
     animation:borderRgb 0.4s step-end infinite;
+    width:100%;
   }
   .key-panel::before{content:'';position:absolute;top:-6px;left:-6px;right:-6px;bottom:-6px;border:1px solid rgba(255,255,255,0.2);}
-  .key-label-txt{font-size:8px;color:#888;letter-spacing:3px;margin-bottom:10px;}
-  .key-value{font-size:clamp(12px,3vw,22px);color:#fff;letter-spacing:4px;font-family:'Courier New',monospace;font-weight:900;text-shadow:0 0 10px rgba(255,255,255,0.5);}
+  .key-label-txt{font-size:clamp(6px,2vw,8px);color:#888;letter-spacing:3px;margin-bottom:10px;}
+  .key-value{
+    font-size:clamp(11px,3.5vw,22px);
+    color:#fff;letter-spacing:clamp(2px,1vw,4px);
+    font-family:'Courier New',monospace;font-weight:900;
+    text-shadow:0 0 10px rgba(255,255,255,0.5);
+    word-break:break-all;
+  }
 
   .copy-btn{
-    font-family:'Press Start 2P',monospace;font-size:9px;
+    font-family:'Press Start 2P',monospace;
+    font-size:clamp(7px,2.2vw,10px);
     padding:10px 20px;background:transparent;
     border:2px solid #fff;cursor:pointer;
     animation:btnRgb 0.3s step-end infinite;
+    width:min(220px,80vw);
   }
-  .copy-btn:hover{background:rgba(255,255,255,0.1);}
-  .copied-msg{font-size:10px;color:#ffff00;text-shadow:0 0 10px #ffff00;opacity:0;transition:opacity 0.3s;height:20px;}
+  .copied-msg{font-size:clamp(8px,2.5vw,11px);color:#ffff00;text-shadow:0 0 10px #ffff00;opacity:0;transition:opacity 0.3s;height:20px;text-align:center;}
   .copied-msg.show{opacity:1;}
 
-  .xp-bar-container{width:280px;margin-top:4px;}
-  .xp-label{font-size:7px;color:#ffcc00;margin-bottom:4px;text-shadow:0 0 6px #ffcc00;}
-  .xp-bar{height:10px;background:#111;border:1px solid #444;overflow:hidden;position:relative;}
+  .xp-bar-container{width:100%;margin-top:2px;}
+  .xp-label{font-size:clamp(5px,1.8vw,7px);color:#ffcc00;margin-bottom:4px;text-shadow:0 0 6px #ffcc00;}
+  .xp-bar{height:10px;background:#111;border:1px solid #444;overflow:hidden;}
   .xp-fill{height:100%;background:linear-gradient(90deg,#ff0000,#ff8800,#ffff00,#00ff00,#00ffff,#0088ff,#ff00ff);background-size:200% 100%;width:0%;transition:width 2s ease-out;animation:xpRgb 0.5s linear infinite;}
   @keyframes xpRgb{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
 
-  /* Floaters */
-  .floater{position:absolute;pointer-events:none;z-index:40;animation:floatUp 1.0s ease-out forwards;font-family:'Press Start 2P',monospace;font-size:11px;text-shadow:2px 2px 0 #000;}
+  .floater{position:absolute;pointer-events:none;z-index:40;animation:floatUp 1.0s ease-out forwards;font-family:'Press Start 2P',monospace;font-size:10px;text-shadow:2px 2px 0 #000;}
   @keyframes floatUp{0%{opacity:1;transform:translate(0,0) scale(1);}60%{opacity:1;transform:translate(var(--dx),calc(var(--dy)*0.6)) scale(1.2);}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(0.8);}}
 
-  /* Hitmarker */
   .hitmarker{position:fixed;pointer-events:none;z-index:200;opacity:0;}
   .hitmarker.pop{animation:hitpop 0.5s ease-out forwards;}
   @keyframes hitpop{0%{opacity:1;transform:translate(-50%,-50%) scale(0.5);}20%{opacity:1;transform:translate(-50%,-50%) scale(1.3);}50%{opacity:1;transform:translate(-50%,-50%) scale(1);}100%{opacity:0;transform:translate(-50%,-50%) scale(1);}}
@@ -204,8 +184,8 @@
   .flash-overlay{position:fixed;inset:0;background:white;opacity:0;pointer-events:none;z-index:150;transition:opacity 0.07s;}
   .flash-overlay.active{opacity:0.85;}
 
-  .boot-screen{position:fixed;inset:0;background:#000;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-  .boot-line{font-size:9px;color:#00ff00;margin:3px 0;text-shadow:0 0 6px #00ff00;opacity:0;animation:bootLine 0.1s ease forwards;}
+  .boot-screen{position:fixed;inset:0;background:#000;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
+  .boot-line{font-size:clamp(7px,2.5vw,10px);color:#00ff00;margin:3px 0;text-shadow:0 0 6px #00ff00;opacity:0;animation:bootLine 0.1s ease forwards;text-align:center;}
   @keyframes bootLine{to{opacity:1}}
 </style>
 </head>
@@ -232,17 +212,15 @@
   <div class="hud-corner hud-br"></div>
 
   <div class="killfeed" id="killfeed"></div>
-
   <div class="radar">
     <div class="radar-sweep"></div>
-    <div class="radar-blip" style="top:28px;left:52px;"></div>
-    <div class="radar-blip" style="top:50px;left:22px;background:#44ff44;box-shadow:0 0 4px #44ff44;"></div>
-    <div class="radar-blip" style="top:18px;left:30px;"></div>
+    <div class="radar-blip" style="top:20px;left:40px;"></div>
+    <div class="radar-blip" style="top:38px;left:16px;background:#44ff44;box-shadow:0 0 4px #44ff44;"></div>
   </div>
   <div class="ammo">30 | 120</div>
 
   <div id="intro">
-    <div class="title-text">★ NaisTroll ★<br><span style="font-size:0.7em;">u got a gift lol</span></div>
+    <div class="title-text">★ NaisTroll ★<br><span style="font-size:0.75em;">u got a gift lol</span></div>
     <div class="from-text">from: <span>ur 2 sisters</span> &amp; <span>ur bro</span></div>
     <button class="reveal-btn" onclick="startReveal(event)">PRESS START</button>
   </div>
@@ -254,22 +232,15 @@
         <div class="prestige">★ PRESTIGE 40 ★</div>
       </div>
     </div>
-
-    <div class="unlocked-text">
-      🏆 ACHIEVEMENT UNLOCKED 🏆<br>
-      <span style="font-size:0.85em;">TURNED 40 / UNCMAXXING</span>
-    </div>
-
+    <div class="unlocked-text">🏆 ACHIEVEMENT UNLOCKED 🏆<br><span style="font-size:0.85em;">TURNED 40 / UNCMAXXING</span></div>
     <div class="key-panel">
       <div class="key-label-txt">:: GAME KEY ::</div>
       <div class="key-value" id="keyValue">XXXX-XXXX-XXXX-XXXX</div>
     </div>
-
     <div class="xp-bar-container">
       <div class="xp-label">XP EARNED: +17061986</div>
       <div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div>
     </div>
-
     <button class="copy-btn" onclick="copyKey(event)">[ COPY KEY ]</button>
     <div class="copied-msg" id="copiedMsg">✓ YOINK'D ✓</div>
   </div>
@@ -278,40 +249,22 @@
 <script>
 const GAME_KEY = "RC2PL-WFA2P-EQXA8";
 
-const enemies = [
-  "xX_n00b_Xx","pr0_sk1llz","MLG_tryhard","quicksc0per99","sniperKiing",
-  "420blazeit","noscope_god","pwn3r2000","camper_dude","h4x0r_leet",
-  "tryhard_tim","AK47_beast","l33t_h4xx0r","FaZe_wannabe","rushB_only",
-  "tube_spammer","gl_hf_lol","b00sted_kid","wallhax_sus","knifed_u_gg",
-  "sweatypalms99","trickshot_kid","SandyRavage","dogtag_stealer","Mw2_legend"
-];
-const killTypes = [
-  {label:"✕",col:"#ff8800"},{label:"💀",col:"#ff4444"},
-  {label:"★",col:"#ffcc00"},{label:"⚡",col:"#88ccff"},{label:"🔥",col:"#ff6600"},
-];
-const specials = ["HEADSHOT","MELEE","MARTYRDOM","LAST STAND","NUKE","KILLSTREAK","PREDATOR"];
+const enemies=["xX_n00b_Xx","pr0_sk1llz","MLG_tryhard","quicksc0per99","sniperKiing","420blazeit","noscope_god","pwn3r2000","camper_dude","h4x0r_leet","tryhard_tim","AK47_beast","l33t_h4xx0r","FaZe_wannabe","rushB_only","tube_spammer","b00sted_kid","wallhax_sus","SandyRavage","Mw2_legend"];
+const killTypes=[{label:"✕",col:"#ff8800"},{label:"💀",col:"#ff4444"},{label:"★",col:"#ffcc00"},{label:"⚡",col:"#88ccff"},{label:"🔥",col:"#ff6600"}];
+const specials=["HEADSHOT","MELEE","MARTYRDOM","LAST STAND","NUKE","KILLSTREAK","PREDATOR"];
 
-let kfEntries=[];
-let audioCtx=null;
-let killCount=0;
+let kfEntries=[],audioCtx=null,killCount=0;
 
 function getAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
 
 function playAirhorn(){
   try{
     const ctx=getAudio();
-    const notes=[
-      {f:220,f2:280,t:0,d:0.5},{f:280,f2:350,t:0,d:0.5},
-      {f:350,f2:440,t:0.4,d:0.5},{f:440,f2:550,t:0.4,d:0.5},
-      {f:550,f2:700,t:0.75,d:0.7},{f:700,f2:880,t:0.75,d:0.7},
-      {f:880,f2:1100,t:1.3,d:1.0},{f:660,f2:880,t:1.3,d:1.0},
-    ];
-    notes.forEach(n=>{
+    [{f:220,f2:280,t:0,d:0.5},{f:280,f2:350,t:0,d:0.5},{f:350,f2:440,t:0.4,d:0.5},{f:440,f2:550,t:0.4,d:0.5},{f:550,f2:700,t:0.75,d:0.7},{f:700,f2:880,t:0.75,d:0.7},{f:880,f2:1100,t:1.3,d:1.0},{f:660,f2:880,t:1.3,d:1.0}].forEach(n=>{
       const osc=ctx.createOscillator(),gain=ctx.createGain(),dist=ctx.createWaveShaper();
       const curve=new Float32Array(256);
       for(let i=0;i<256;i++){const x=i*2/256-1;curve[i]=x*(Math.abs(x)+0.3)/(x*x+0.7);}
-      dist.curve=curve;
-      osc.connect(dist);dist.connect(gain);gain.connect(ctx.destination);
+      dist.curve=curve;osc.connect(dist);dist.connect(gain);gain.connect(ctx.destination);
       osc.type='sawtooth';
       osc.frequency.setValueAtTime(n.f,ctx.currentTime+n.t);
       osc.frequency.exponentialRampToValueAtTime(n.f2,ctx.currentTime+n.t+n.d*0.5);
@@ -324,8 +277,7 @@ function playAirhorn(){
 
 function playHitmarker(){
   try{
-    const ctx=getAudio();
-    const osc=ctx.createOscillator(),gain=ctx.createGain();
+    const ctx=getAudio(),osc=ctx.createOscillator(),gain=ctx.createGain();
     osc.connect(gain);gain.connect(ctx.destination);
     osc.type='sine';
     osc.frequency.setValueAtTime(1800,ctx.currentTime);
@@ -336,10 +288,7 @@ function playHitmarker(){
   }catch(e){}
 }
 
-function flash(){
-  const f=document.getElementById('flash');
-  f.classList.add('active');setTimeout(()=>f.classList.remove('active'),80);
-}
+function flash(){const f=document.getElementById('flash');f.classList.add('active');setTimeout(()=>f.classList.remove('active'),80);}
 
 function showHitmarker(x,y){
   const hm=document.getElementById('hitmarker');
@@ -353,8 +302,8 @@ function spawnFloater(text,color,x,y,size){
   el.className='floater';el.textContent=text;
   el.style.color=color;el.style.left=x+'px';el.style.top=y+'px';
   if(size)el.style.fontSize=size;
-  el.style.setProperty('--dx',(Math.random()*120-60)+'px');
-  el.style.setProperty('--dy',(-80-Math.random()*80)+'px');
+  el.style.setProperty('--dx',(Math.random()*80-40)+'px');
+  el.style.setProperty('--dy',(-60-Math.random()*60)+'px');
   document.getElementById('scene').appendChild(el);
   setTimeout(()=>el.remove(),1100);
 }
@@ -368,43 +317,34 @@ function addKillEntry(){
   const div=document.createElement('div');
   div.className='kf-entry';
   if(isSpecial){
-    const sp=specials[Math.floor(Math.random()*specials.length)];
-    div.innerHTML=`<span class="yellow">NaisTroll [${sp}]</span>`;
+    div.innerHTML=`<span class="yellow">NaisTroll [${specials[Math.floor(Math.random()*specials.length)]}]</span>`;
   } else {
     div.innerHTML=`<span class="green">NaisTroll</span> <span style="color:${kt.col}">${kt.label}</span> <span class="red">${enemy}</span>`;
   }
   kf.appendChild(div);kfEntries.push(div);
   void div.offsetWidth;div.classList.add('show');
   playHitmarker();
-  if(kfEntries.length>6){
-    const old=kfEntries.shift();
-    old.classList.add('fade');
-    setTimeout(()=>old.remove(),500);
-  }
+  if(kfEntries.length>6){const old=kfEntries.shift();old.classList.add('fade');setTimeout(()=>old.remove(),500);}
 }
 
 function startKillfeed(){
   addKillEntry();
-  function scheduleNext(){
-    const delay=700+Math.random()*1600;
-    setTimeout(()=>{addKillEntry();scheduleNext();},delay);
-  }
-  scheduleNext();
+  function next(){setTimeout(()=>{addKillEntry();next();},700+Math.random()*1600);}
+  next();
 }
 
 const floaterWords=[
   {t:'GG',c:'#88ff22'},{t:'REKT',c:'#ff4400'},{t:'EZ',c:'#ffcc00'},
   {t:'OWNED',c:'#ff4400'},{t:'LOL',c:'#88ccff'},{t:'PWN3D',c:'#ff00aa'},
-  {t:'360°',c:'#ffff00'},{t:'NO RE',c:'#ff4400'},{t:'HAHA',c:'#88ff22'},
-  {t:'GET REKT',c:'#ff8800'},{t:'✕',c:'#ff8800'},{t:'💥',c:'#ff6600'},
-  {t:'★',c:'#ffcc00'},{t:'⚡',c:'#88ccff'},{t:'🎮',c:'#88ff22'},
+  {t:'360°',c:'#ffff00'},{t:'NO RE',c:'#ff4400'},{t:'GET REKT',c:'#ff8800'},
+  {t:'✕',c:'#ff8800'},{t:'💥',c:'#ff6600'},{t:'★',c:'#ffcc00'},
   {t:'GG EZ',c:'#ff4400'},{t:'NOOB',c:'#ff00ff'},{t:'40!!!',c:'#ffcc00'},
 ];
 
 function startReveal(e){
+  const rect=document.getElementById('scene').getBoundingClientRect();
   showHitmarker(e.clientX,e.clientY);
-  flash();
-  playAirhorn();
+  flash();playAirhorn();
   document.getElementById('intro').style.display='none';
   document.getElementById('keyBox').classList.add('show');
   document.getElementById('keyValue').textContent=GAME_KEY;
@@ -412,74 +352,52 @@ function startReveal(e){
 
   let count=0;
   const burst=setInterval(()=>{
-    const w=document.getElementById('scene').offsetWidth||400;
-    const h=document.getElementById('scene').offsetHeight||600;
-    const x=40+Math.random()*(w-80);
-    const y=60+Math.random()*(h-120);
+    const w=rect.width||320,h=rect.height||600;
     const item=floaterWords[Math.floor(Math.random()*floaterWords.length)];
-    const sizes=['10px','12px','14px','16px','11px','18px'];
-    spawnFloater(item.t,item.c,x,y,sizes[Math.floor(Math.random()*sizes.length)]);
-    count++;
-    if(count>35)clearInterval(burst);
-  },60);
+    spawnFloater(item.t,item.c,20+Math.random()*(w-40),40+Math.random()*(h-80),['9px','11px','13px','10px'][Math.floor(Math.random()*4)]);
+    count++;if(count>30)clearInterval(burst);
+  },65);
 
   setInterval(()=>{
-    if(Math.random()<0.45){
-      const w=document.getElementById('scene').offsetWidth||400;
+    if(Math.random()<0.4){
+      const w=document.getElementById('scene').offsetWidth||320;
       const h=document.getElementById('scene').offsetHeight||600;
       const item=floaterWords[Math.floor(Math.random()*floaterWords.length)];
-      spawnFloater(item.t,item.c,40+Math.random()*(w-80),60+Math.random()*(h-120),'10px');
+      spawnFloater(item.t,item.c,20+Math.random()*(w-40),40+Math.random()*(h-80),'9px');
     }
-  },1000);
+  },1100);
 }
 
 function copyKey(e){
   e&&e.stopPropagation();
   navigator.clipboard.writeText(GAME_KEY).catch(()=>{
-    const t=document.createElement('textarea');
-    t.value=GAME_KEY;document.body.appendChild(t);t.select();
-    document.execCommand('copy');document.body.removeChild(t);
+    const t=document.createElement('textarea');t.value=GAME_KEY;
+    document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);
   });
   const msg=document.getElementById('copiedMsg');
   msg.classList.remove('show');void msg.offsetWidth;msg.classList.add('show');
   playHitmarker();flash();
-  for(let i=0;i<6;i++)setTimeout(()=>{
-    const w=document.getElementById('scene').offsetWidth||400;
-    spawnFloater('✓','#00ff88',80+Math.random()*(w-160),200+Math.random()*100);
+  for(let i=0;i<5;i++)setTimeout(()=>{
+    const w=document.getElementById('scene').offsetWidth||320;
+    spawnFloater('✓','#00ff88',40+Math.random()*(w-80),200+Math.random()*80);
   },i*80);
 }
 
-document.addEventListener('click',e=>{
-  if(e.target.tagName!=='BUTTON')showHitmarker(e.clientX,e.clientY);
-});
+document.addEventListener('click',e=>{if(e.target.tagName!=='BUTTON')showHitmarker(e.clientX,e.clientY);});
+document.addEventListener('touchstart',e=>{
+  const t=e.touches[0];
+  if(e.target.tagName!=='BUTTON')showHitmarker(t.clientX,t.clientY);
+},{passive:true});
 
-const bootLines=[
-  "ACTIVISION BOOT v2.0",
-  "Loading prestige data...",
-  "Connecting to Xbox Live...",
-  "Player found: NaisTroll",
-  "Date of birth: 17/06/1986",
-  "Age detected: 40",
-  "Prestige level: 40 (MAX)",
-  "K/D Ratio: 2.4",
-  "ACCESS GRANTED",
-  "",
-  ">> Happy birthday old man"
-];
+const bootLines=["ACTIVISION BOOT v2.0","Loading prestige data...","Connecting to Xbox Live...","Player found: NaisTroll","Date of birth: 17/06/1986","Age detected: 40","Prestige level: 40 (MAX)","K/D Ratio: 2.4","ACCESS GRANTED","",">> Happy birthday old man"];
 
 function doBootScreen(){
   const container=document.getElementById('bootLines');
   bootLines.forEach((line,i)=>{
     setTimeout(()=>{
-      const div=document.createElement('div');
-      div.className='boot-line';div.textContent=line;
+      const div=document.createElement('div');div.className='boot-line';div.textContent=line;
       container.appendChild(div);
-      if(i===bootLines.length-1){
-        setTimeout(()=>{
-          document.getElementById('bootScreen').style.display='none';
-          startKillfeed();
-        },700);
-      }
+      if(i===bootLines.length-1)setTimeout(()=>{document.getElementById('bootScreen').style.display='none';startKillfeed();},700);
     },i*200);
   });
 }
